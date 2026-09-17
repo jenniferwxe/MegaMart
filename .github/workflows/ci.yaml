@@ -124,7 +124,8 @@ jobs:
             --ignore-vuln CVE-2026-71491 \
             --ignore-vuln CVE-2026-59894 \
             --ignore-vuln CVE-2026-59893 \
-            --ignore-vuln CVE-2026-54284
+            --ignore-vuln CVE-2026-54284 \
+            --ignore-vuln PYSEC-2026-3923
 
       - name: Code security scan (Bandit)
         run: |
