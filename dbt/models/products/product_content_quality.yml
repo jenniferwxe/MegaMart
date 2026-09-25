@@ -189,7 +189,7 @@ models:
                   severity: High
                   description: content_version_id must be unique.
 
-          - dbt_expectations.expect_column_values_to_match_regex:
+          - column_values_to_match_regex:
               arguments:
                 regex: "^PCQ[0-9]{7,}$"
 
