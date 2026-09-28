@@ -16,7 +16,7 @@ models:
           config:
             meta:
               title: Duplicate Transaction
-              category: Business Rule Violations
+              category: Duplicated Records
               severity: High
               description: A transaction must only appear once per customer, store, and transaction_time.
 

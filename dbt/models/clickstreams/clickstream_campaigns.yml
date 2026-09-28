@@ -15,7 +15,7 @@ models:
           config:
             meta:
               title: Duplicate Clickstream Campaign
-              category: Business Rule Violations
+              category: Duplicated Records
               severity: High
               description: A campaign_id must only appear once per clickstream event.
 
