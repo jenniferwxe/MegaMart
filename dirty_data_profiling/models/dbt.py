@@ -28,7 +28,9 @@ class DBTTestResult:
 
     column: str | None
 
-    test_name: str
+    test_type: str
+
+    rule: str
 
     #
     # Execution
@@ -90,7 +92,7 @@ class DBTValidationSummary:
 
     dataset: str
 
-    primary_key: str
+    primary_key: list[str]
 
     tests: list[DBTTestResult] = field(default_factory=list)
 

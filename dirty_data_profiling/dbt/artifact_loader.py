@@ -136,20 +136,68 @@ class DBTArtifactLoader:
     def _primary_key(
         self,
         unique_id: str,
-    ) -> str:
+    ) -> list[str]:
 
-        model = self._model_node(unique_id)
+        node = self.nodes[unique_id]
 
-        primary_key = model.get(
-            "primary_key",
-            [],
+        # Resolve test node -> model node if necessary
+        if node.get("resource_type") == "test":
+            model_unique_id = node.get("attached_node")
+
+            if not model_unique_id:
+                raise ValueError(f"Test {unique_id} has no attached model.")
+
+            model = self.nodes[model_unique_id]
+
+        else:
+            model = node
+
+        # Explicit primary key metadata
+        primary_key = model.get("primary_key", [])
+
+        if primary_key:
+            return primary_key
+
+        model_unique_id = model["unique_id"]
+
+        # Infer key from dbt tests
+        for node in self.nodes.values():
+
+            if node.get("resource_type") != "test":
+                continue
+
+            if node.get("attached_node") != model_unique_id:
+                continue
+
+            metadata = node.get("test_metadata", {})
+
+            namespace = metadata.get("namespace")
+            name = metadata.get("name")
+
+            #
+            # Single-column unique
+            #
+
+            if name == "unique" and namespace is None:
+                column = node.get("column_name")
+
+                if column:
+                    return [column]
+
+            #
+            # Composite unique
+            #
+
+            if namespace == "dbt_utils" and name == "unique_combination_of_columns":
+                combination = metadata.get("kwargs", {}).get("combination_of_columns")
+
+                if combination:
+                    return combination
+
+        raise ValueError(
+            f"{model['name']} has no primary key, "
+            "unique test, or unique column combination."
         )
-
-        if not primary_key:
-
-            raise ValueError(f"{model['name']} has no primary key.")
-
-        return primary_key[0]
 
     def _dataset(
         self,
@@ -167,11 +215,7 @@ class DBTArtifactLoader:
 
         return node.get("column_name")
 
-    def _metadata(
-        self,
-        node: dict,
-        canonical_test: str,
-    ) -> RuleMetadata:
+    def _metadata(self, node: dict, canonical_test: str) -> RuleMetadata:
 
         #
         # defaults
@@ -179,43 +223,39 @@ class DBTArtifactLoader:
 
         default = RULE_METADATA.get(canonical_test)
 
-        if default is None:
+        meta = node.get("config", {}).get("meta", {})
 
+        if default is None:
             return RuleMetadata(
-                category="Unknown",
-                severity="Medium",
-                description="",
-                business_impact="",
-                cleaning_strategy="",
-                dbt_recommendation="",
-                colour="#DDDDDD",
-                icon="❓",
+                category=meta.get("category", "Unknown"),
+                severity=meta.get("severity", "Medium"),
+                description=meta.get("description", ""),
+                business_impact=meta.get("business_impact", ""),
+                cleaning_strategy=meta.get("cleaning_strategy", ""),
+                dbt_recommendation=meta.get("dbt_recommendation", ""),
+                colour=meta.get("colour", "#DDDDDD"),
+                icon=meta.get("icon", "❓"),
             )
 
         #
         # dbt meta overrides
         #
 
-        meta = node.get("config", {}).get("meta", {})
-
         return RuleMetadata(
-            category=meta.get(
-                "category",
-                default.category,
+            category=meta.get("category", default.category),
+            severity=meta.get("severity", default.severity),
+            description=meta.get("description", default.description),
+            business_impact=meta.get("business_impact", default.business_impact),
+            cleaning_strategy=meta.get(
+                "cleaning_strategy",
+                default.cleaning_strategy,
             ),
-            severity=meta.get(
-                "severity",
-                default.severity,
+            dbt_recommendation=meta.get(
+                "dbt_recommendation",
+                default.dbt_recommendation,
             ),
-            description=meta.get(
-                "description",
-                default.description,
-            ),
-            business_impact=default.business_impact,
-            cleaning_strategy=default.cleaning_strategy,
-            dbt_recommendation=default.dbt_recommendation,
-            colour=default.colour,
-            icon=default.icon,
+            colour=meta.get("colour", default.colour),
+            icon=meta.get("icon", default.icon),
         )
 
     # ------------------------------------------------------
@@ -280,10 +320,14 @@ class DBTArtifactLoader:
 
         metadata = node["test_metadata"]
 
-        canonical = canonical_name(
+        test_type = canonical_name(
             metadata.get("namespace"),
             metadata["name"],
         )
+
+        meta = node.get("config", {}).get("meta", {})
+
+        rule = meta.get("title") or node["name"]
 
         return DBTTestResult(
             unique_id=node["unique_id"],
@@ -293,7 +337,8 @@ class DBTArtifactLoader:
             column=self._column(
                 node,
             ),
-            test_name=canonical,
+            test_type=test_type,
+            rule=rule,
             status=result["status"],
             execution_time=result["execution_time"],
             failures=result.get(
@@ -314,7 +359,7 @@ class DBTArtifactLoader:
             ),
             metadata=self._metadata(
                 node,
-                canonical,
+                test_type,
             ),
         )
 
