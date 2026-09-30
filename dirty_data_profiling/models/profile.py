@@ -15,13 +15,13 @@ class DatasetStatistics:
 
     total_rows: int
 
+    affected_rows: int
+
     clean_rows: int
 
-    dirty_rows: int
+    affected_row_rate: float
 
-    dirty_ratio: float
-
-    health_score: float
+    failure_instances: int
 
 
 @dataclass(slots=True)
@@ -41,8 +41,6 @@ class DatasetProfile:
     #
     # Analytics
     #
-
-    issue_summary: dict = field(default_factory=dict)
 
     severity_summary: dict = field(default_factory=dict)
 

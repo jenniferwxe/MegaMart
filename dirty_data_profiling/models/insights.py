@@ -9,16 +9,6 @@ from dataclasses import dataclass, field
 class DatasetInsights:
 
     #
-    # Overall quality
-    #
-
-    quality_grade: str
-
-    health_score: float
-
-    recommendation: str
-
-    #
     # Biggest problems
     #
 

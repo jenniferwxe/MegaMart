@@ -14,16 +14,19 @@ class DashboardMetrics:
 
     total_rows: int
 
+    affected_rows: int
+
     clean_rows: int
 
-    dirty_rows: int
+    affected_row_rate: float
 
-    health_score: float
+    failure_instances: int
 
     success_rate: float
 
     #
     # dbt
+    #
 
     total_tests: int
 
@@ -35,6 +38,7 @@ class DashboardMetrics:
 
     #
     # Top Issues
+    #
 
     most_affected_column: str | None
 
@@ -44,6 +48,7 @@ class DashboardMetrics:
 
     #
     # Charts
+    #
 
     category_summary: dict
 
