@@ -6,6 +6,19 @@ models:
 
     # --- Business Rules ---
     tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - product_id
+              - valid_from
+
+          config:
+            meta:
+              title: Duplicate Product Lifecycle Version
+              category: Duplicated Records
+              severity: High
+              description: Each product and valid_from combination must be unique.
+
       - single_current_product_lifecycle_version:
           config:
             meta:
