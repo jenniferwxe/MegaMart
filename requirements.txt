@@ -467,9 +467,7 @@ typing-inspection==0.4.2
 urllib3==2.8.0
     # via requests
 virtualenv==21.14.2
-    # via
-    #   -r requirements.in
-    #   pre-commit
+    # via pre-commit
 websockets==16.1.1
     # via google-genai
 zipp==4.1.0
