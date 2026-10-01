@@ -42,6 +42,8 @@ jobs:
           filters: |
             lint:
               - '**/*.py'
+              - 'requirements.in'
+              - 'requirements.txt'
             test:
               - 'data_generation/**/*.py'
               - 'tests/**/*.py'
@@ -92,12 +94,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install dependencies
+      - name: Install dependency tools
         run: |
-          python -m pip install "pip==26.1.2"
+          python -m pip install "pip==26.2"
           python -m pip install "setuptools>=83.0.0"
           python -m pip install "pip-tools==7.6.0"
-          python -m pip install -r requirements.txt
 
       - name: Show tool versions
         run: |
@@ -105,16 +106,21 @@ jobs:
           python -m pip --version
           pip-compile --version
 
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+
       - name: Validate requirements.txt
         run: |
           pip-compile requirements.in --quiet
           git diff --exit-code requirements.txt
 
+      - name: Upgrade pip for security scan
+        run: |
+          python -m pip install --upgrade "pip>=26.2"
+
       - name: Run pre-commit hooks (lint, format)
         run: pre-commit run --all-files --show-diff-on-failure
-
-      - name: Upgrade pip
-        run: python -m pip install --upgrade "pip>=26.2"
 
       - name: Dependency security scan
         run: |
@@ -196,9 +202,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "pip==26.1.2"
+          python -m pip install "pip>=26.2"
           python -m pip install "setuptools>=83.0.0"
-          python -m pip install "pip-tools==7.6.0"
           python -m pip install -r requirements.txt
 
       - name: Authenticate to Google Cloud Platform
