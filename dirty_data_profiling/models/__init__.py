@@ -7,6 +7,7 @@ from dirty_data_profiling.models.dbt import (
 )
 from dirty_data_profiling.models.insights import DatasetInsights
 from dirty_data_profiling.models.profile import DatasetProfile, DatasetStatistics
+from dirty_data_profiling.models.profiling import ProfilingResult
 
 __all__ = [
     "DatasetInsights",
@@ -15,4 +16,5 @@ __all__ = [
     "DBTTestResult",
     "DBTValidationSummary",
     "DashboardMetrics",
+    "ProfilingResult",
 ]
