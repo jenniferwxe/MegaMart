@@ -98,19 +98,148 @@ Apply **predictive modelling**, **customer segmentation**, **forecasting**, and 
 Develop interactive **Power BI** dashboards using dashboard ready datasets from the analytical data layer to monitor business KPIs, customer behaviour, sales performance, inventory, and other operational metrics.
 
 ### 11. MCP Analytics Tools
-Build Model Context Protocol (MCP) tools that expose the analytical environment to AI agents, enabling programmatic access to business data, controlled querying, analytical workflows, and AI assisted business question answering.
+Build **Model Context Protocol (MCP)** tools that expose the analytical environment to AI agents, enabling programmatic access to business data, controlled querying, analytical workflows, and AI assisted business question answering.
+
+```text
+                    User
+                      │
+                      ▼
+                  AI Agent
+                      │
+                      ▼
+                  MCP Tools
+                      │
+          ┌───────────┼───────────┐
+          ▼           ▼           ▼
+       Sales      Inventory    Customers
+       Tools        Tools        Tools
+          │           │           │
+          └───────────┼───────────┘
+                      ▼
+                   BigQuery
+                      │
+                      ▼
+              Structured Results
+                      │
+                      ▼
+              Grounded Explanation
+```
+
+The design emphasises **controlled access** rather than unrestricted database access. MCP tools define the available analytical capabilities while supporting:
+
+- **least-privilege access**
+- **controlled capabilities**
+- **structured inputs and outputs**
+- **validation**
+- **traceability**
+- **business-specific analytical logic**
+
+This provides a governed interface between AI agents and the underlying analytics environment.
+
+## Engineering Focus
+MegaMart focuses on three key engineering questions:
+
+- **Data Quality & Reliability**: How can data quality issues be detected, measured, and handled before they affect downstream analysis?
+- **Data Preparation**: How can raw source data be transformed into trusted, reusable analytical datasets?
+- **AI Access**: How can analytical data be exposed to AI systems in a controlled and explainable way?
+
+## Business Questions MegaMart Can Answer
+MegaMart supports analysis across key retail domains:
+
+### Sales & Commercial Performance
+- How is revenue changing over time?
+- Which stores, channels, and categories contribute most to revenue?
+- What factors are associated with changes in sales performance?
+
+### Customers
+- Which customer segments have the highest value?
+- How do purchasing patterns differ across customer segments?
+- Which customers show signs of declining engagement?
+
+### Products
+- Which products have the strongest and weakest performance?
+- Which products are frequently purchased together?
+- How does product performance change across stores and channels?
+
+### Marketing
+- Which campaigns generate the strongest engagement and conversion?
+- Which customer segments respond best to different campaigns?
+- How does campaign performance vary across channels?
+
+### Inventory & Demand
+- Which products are at risk of stockouts?
+- Where do inventory levels diverge from observed demand?
+- What demand patterns can support inventory planning?
+
+## Data Modelling Approach
+MegaMart uses a layered data modelling approach in **dbt** to progressively transform simulated source data into trusted analytical datasets.
+
+```mermaid
+flowchart TB
+    A["Raw / Simulated Source Data"]
+    B["Staging Models"]
+    C["Analytical Models"]
+
+    A --> B --> C
+```
+- **Raw / Simulated Source Data** — Generated retail datasets containing intentionally simulated data quality issues.
+- **Staging Models** — Standardise source data, handle data types and duplicates, and apply foundational business rules.
+- **Analytical Models** — Build reusable business entities, metrics, relationships, and derived fields for downstream **BI**, **feature engineering**, **machine learning**, and **AI assisted analytics**.
+
+## Core Technology Choices
+MegaMart uses different technologies for different stages of the analytics lifecycle. Each tool has a defined role within the project.
+
+### Why BigQuery?
+BigQuery is MegaMart's cloud data warehouse, where generated and transformed retail data is stored and queried for analytical workloads.
+
+It was chosen for:
+- Scalable analytical SQL
+- Cloud native data storage and processing
+- Separation of storage and compute
+- Support for large analytical workloads
+
+Although MegaMart uses synthetic data at portfolio scale, the architecture follows patterns that can scale beyond the demonstration dataset.
+
+### Why dbt?
+dbt manages MegaMart's SQL transformation and data quality logic. It turns SQL transformation into version controlled, testable, and documented data models.
+
+MegaMart uses dbt for:
+- SQL transformation and dependency management
+- Data quality testing
+- Reusable macros
+- Documentation and metadata
+- Persisted test failures
+
+### Why Python?
+Python is used extensively across MegaMart for tasks that require procedural logic, orchestration, or integration beyond SQL.
+
+MegaMart uses Python for:
+- Synthetic data generation and business rules
+- Data quality profiling and failure analysis
+- Notebook based analysis and visualisation
+- Feature engineering
+- Predictive modelling and advanced analytics
+- MCP integration
+
+These three tools form the project's **core data engineering and analytics foundation**.
 
 ## Supporting Practices
-The technical workflow is supported by engineering and project-management practices throughout the project.
-- **Project Management** - planning, milestones, sprint management, and task tracking using Jira and Confluence.
-- **Engineering & Quality Practices** - automated testing, validation, CI/CD, dependency management, pre-commit checks, and reproducible workflows using Python, GitHub Actions, and development tooling.
-- **Documentation & Knowledge Management** - architecture, documentation, methodology, technical decisions, debugging guides, implementation notes, and user documentation using Confluence and GitHub repository documentation.
-- **Version Control** - source controlled code, configuration driven workflows, deterministic data generation, and repeatable development and production runs.
+
+The technical workflow is supported by engineering and project management practices throughout the project.
+
+- **Project Management** - Planning, milestones, sprint management, and task tracking using Jira and Confluence.
+- **Engineering & Quality Practices** - Automated testing, CI/CD, dependency management, pre-commit checks, and reproducible workflows.
+- **Documentation & Knowledge Management** - Architecture, methodology, technical decisions, debugging guides, implementation notes, and user documentation using Confluence and GitHub.
+- **Version Control** - Source controlled code, configuration driven workflows, deterministic data generation, and repeatable workflows.
+
+> - Orchestration → `run_all.py` coordinates the workflow
+> - Automation → `.github/workflows/` validates changes through CI/CD
+> - Testing → `tests/` provides automated tests for synthetic data generation and its business rules
 
 ## Scale & Reproducibility
 MegaMart supports **configurable dataset sizes** for development and larger production style runs. Dataset volumes, business entities, and generation parameters can be adjusted through configuration.
 
-The current synthetic data period spans **1 January 2023** to **31 December 2025**. A fixed random seed ensures deterministic generation, allowing the same environment and data characteristics to be reproduced across runs while supporting large scale dataset generation.
+The synthetic data generation uses a fixed random seed, while transformation logic, project configuration, dependencies, and workflows are version controlled. This allows the same data characteristics and analytical environment to be reproduced across runs.
 
 The current synthetic data period spans **1 January 2023** to **31 December 2025**.
 
