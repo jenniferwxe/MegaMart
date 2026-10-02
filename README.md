@@ -4,7 +4,7 @@
 ## Overview
 MegaMart is an end-to-end synthetic retail analytics platform that simulates a modern supermarket and e-commerce data environment. The project deliberately introduces realistic data quality issues and processes the data through validation, transformation, analytics, machine learning preparation, business intelligence, and AI assisted analysis.
 
-The platform demonstrates how **Business Data Analytics**, **Analytics Engineering**, **Data Quality**, **Machine Learning**, **Cloud Data Warehousing**, and **AI tooling** can be integrated across a complete analytics lifecycle.
+The platform demonstrates how **Business Data Analytics**, **Data Engineering**, **Analytics Engineering**, **Data Quality Engineering**, **Machine Learning**, and **AI tooling** can be integrated across a complete analytics lifecycle.
 
 The project covers multiple interconnected business domains including:
 - 👥 Customers
@@ -19,11 +19,46 @@ The project covers multiple interconnected business domains including:
 ## Why MegaMart?
 Many analytics projects begin with a clean dataset and end with a dashboard. Real world analytics workflows require substantially more work before data can be consumed and insights can be generated.
 
-MegaMart is designed around practical questions such as:
-- Is the source data trustworthy?
-- How frequently and severely do quality issues occur?
-- How can problematic data be identified and handled before downstream analysis?
-- How can analytical data be exposed to AI systems in a controlled and explainable way?
+MegaMart is designed to demonstrate this broader workflow - from synthetic source generation and data quality engineering to analytical transformation, advanced analytics, and AI assisted data analysis.
+
+Rather than focusing solely on dashbaord development, the project demonstrates how raw data can be systematically validated, transformed, analysed, and exposed for downstream analytical consumption.
+
+## What This Project Demonstrates
+MegaMart is designed as a **maintainable retail analytics platform** rather than a standalone dashboard. It brings together the layers needed to move from raw data to **trustworthy, reusable, and business ready analysis**.
+
+| Capability | What MegaMart Does | Why It Matters |
+|---|---|---|
+| **Analytics** | Builds business facing datasets and analytical workflows across sales, customers, products, inventory, campaigns, segmentation, and forecasting. | Supports business ready analysis and actionable commercial insights from a consistent analytical foundation. |
+| **Data Engineering** | Orchestrates data generation, quality simulation, validation, transformation, and analysis as a connected workflow. | Makes the data lifecycle reproducible, allowing the same process to be rerun across datasets and development environments. |
+| **Analytics Engineering** | Organises transformations with modular dbt models, reusable tests, packages, metadata, and documented dependencies. | Creates a structured transformation layer that is easier to understand, maintain, test, and extend as the project grows. |
+| **Data Quality Engineering** | Captures dbt test failures and profiling results, then surfaces affected records and business readable data quality insights. | Makes data issues visible and traceable before they influence downstream analysis. |
+| **Python & AI Engineering** | Develops reusable Python components and MCP tools for data workflows, analytical operations, and controlled AI interaction. | Extends the platform beyond manual analysis by making analytical capabilities programmatically accessible. |
+
+Together, these layers demonstrate how analytical work can be built as a **reproducible and maintainable system**, integrating data, transformation, quality, analysis, and AI access into a cohesive platform.
+
+## Architecture
+```mermaid
+flowchart TB
+    A["Synthetic Data Generation"]
+    B["Data Quality Simulation"]
+    C["Raw Data Layer"]
+    D["Transformation & Data Validation"]
+    E["Data Quality Profiling"]
+    F["Analytical Data Layer"]
+    G["BI & Visualization"]
+    H["AI Analytics"]
+    I["AI Agent"]
+
+    A --> B --> C
+    C --> D
+    D --> E
+    D --> F
+    E -.-> F
+    F --> G
+    F --> H --> I
+```
+
+The architecture separates **data generation, data quality assessment, transformation, and analytical consumption**, with data quality profiling providing structured visibility into validation results before downstream analysis.
 
 ## Workflow
 MegaMart follows data through the complete analytical lifecycle, from generation to consumption.
