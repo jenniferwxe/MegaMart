@@ -4,7 +4,7 @@
 ## Overview
 MegaMart is an end-to-end synthetic retail analytics platform that simulates a modern supermarket and e-commerce data environment. The project deliberately introduces realistic data quality issues and processes the data through validation, transformation, analytics, machine learning preparation, business intelligence, and AI assisted analysis.
 
-The platform demonstrates how **data engineering**, **data quality**, **business analytics**, **machine learning**, **cloud data warehousing**, and **AI tooling** can be integrated across a complete analytics lifecycle.
+The platform demonstrates how **Business Data Analytics**, **Analytics Engineering**, **Data Quality**, **Machine Learning**, **Cloud Data Warehousing**, and **AI tooling** can be integrated across a complete analytics lifecycle.
 
 The project covers multiple interconnected business domains including:
 - 👥 Customers
@@ -57,20 +57,113 @@ Construct reusable analytical and machine learning ready features using Python a
 ### 9. Advanced Analytics & Machine Learning
 Apply predictive modelling, customer segmentation, forecasting, and association-rule mining to support business decision making.
 
-### 8. Dashboarding & Business Intelligence
+### 10. Dashboarding & Business Intelligence
 Develop interactive Power BI dashboards using dashboard ready datasets from the production analytical layer to monitor business KPIs, customer behaviour, sales performance, inventory, and other operational metrics.
 
-### 9. MCP Analytics Tools
+### 11. MCP Analytics Tools
 Build Model Context Protocol (MCP) tools that expose the analytical environment to AI agents, enabling programmatic access to business data, controlled querying, analytical workflows, and AI assisted business question answering.
 
-## Supporting Practises
-The technical workflow is supported by engineering and project-management practises throughout the project.
+## Supporting Practices
+The technical workflow is supported by engineering and project-management practices throughout the project.
 - **Project Management** - planning, milestones, sprint management, and task tracking using Jira and Confluence.
-- **Engineering & Quality Practises** - automated testing, validation, CI/CD, dependency management, pre-commit checks, and reproducible workflows using Python, Github Actions, and development tooling.
-- **Documentation & Knowledge Management** - architecture, documentation, methodology, technical decisions, debugging guides, implementation notes, and user documentation using Confluence and Github repository documentation.
+- **Engineering & Quality Practices** - automated testing, validation, CI/CD, dependency management, pre-commit checks, and reproducible workflows using Python, GitHub Actions, and development tooling.
+- **Documentation & Knowledge Management** - architecture, documentation, methodology, technical decisions, debugging guides, implementation notes, and user documentation using Confluence and GitHub repository documentation.
 - **Version Control** - source controlled code, configuration driven workflows, deterministic data generation, and repeatable development and production runs.
 
-## Scale & Reproducibility:
-MegaMart supports **configurable dataset sizes** for development and larger production style runs. Dataset volumes, business entities, and geeneration parameters can be adjusted through configuration.
+## Scale & Reproducibility
+MegaMart supports **configurable dataset sizes** for development and larger production style runs. Dataset volumes, business entities, and generation parameters can be adjusted through configuration.
 
 The current synthetic data period spans 1 January 2023 to 31 December 2025. A fixed random seed ensures deterministic generation, allowing the same environment and data characteristics to be reproduced across runs while supporting large scale dataset generation.
+
+## User Manual
+The following steps cover the core data generation, transformation, data quality, and exploratory analysis workflow. Machine learning notebooks, Power BI dashboards, and MCP analytics are documented separately.
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/jenniferwxe/MegaMart.git
+cd MegaMart
+```
+
+### 2. Create the Python Environment
+On Mac:
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+On Windows:
+```bash
+venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. BigQuery Setup
+Configure Google Cloud credentials and ensure the target BigQuery project is available.
+**Project:** `mega-mart-storage`
+**Region:** `asia-southeast1`
+
+The project uses the following datasets:
+- `synthetic_dirty` - dirty source environment
+- `synthetic_dirty_dbt_test__audit` - persisted dbt test failures used by the profiling workflow
+
+### 5. Generate the Data
+Run the project's data generation workflow:
+```bash
+python -m data_generation.generation_runner
+python -m dirty_data_generation.run_dirty_generation
+```
+The generator should use the configured random seed `42` for reproducibility.
+
+### 6. Run dbt
+From the repository root, enter the dbt project:
+```bash
+cd dbt
+```
+
+Install dbt packages:
+```bash
+dbt deps
+```
+
+Run transformation:
+```bash
+dbt run
+```
+
+Run tests with persisted failures:
+```bash
+dbt test --store-failures
+```
+This allows failing records to be written to the audit dataset for downstream analysis.
+
+After completing the dbt workflow, return to the repository root:
+```bash
+cd ..
+```
+
+### 7. Run the Dirty Data Profiler
+From the repository root:
+```bash
+python -m dirty_data_profiling.run_profiling
+```
+
+The profiling pipeline:
+1. executes the configured dbt run and test workflow
+2. reads generated dbt artifacts
+3. loads persisted failure records
+4. calculates dataset level statistics
+5. builds structured profiles
+6. generates the profiling report
+
+The profiling output should be generated before running downstream notebook analysis.
+
+### 8. Notebook Analysis
+Once the profiling report has been generated, the notebook can be used for deeper exploratory analysis and visualisation. The notebook should consume the profiling outputs rather than independently recreating the dbt validation logic.
+> dbt = source of truth for validation<br>
+> Python profiler = structured interpretation of validation results<br>
+> Jupyter Notebook = exploratory analysis/visualisation
+
+In `dirty_data_profiling/notebook/01_dirty_data_profiling.ipynb`, select **Run All** to execute all cell and generate the notebook outputs.
