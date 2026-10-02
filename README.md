@@ -73,7 +73,7 @@ The technical workflow is supported by engineering and project-management practi
 ## Scale & Reproducibility
 MegaMart supports **configurable dataset sizes** for development and larger production style runs. Dataset volumes, business entities, and generation parameters can be adjusted through configuration.
 
-The current synthetic data period spans 1 January 2023 to 31 December 2025. A fixed random seed ensures deterministic generation, allowing the same environment and data characteristics to be reproduced across runs while supporting large scale dataset generation.
+The current synthetic data period spans **1 January 2023** to **31 December 2025**. A fixed random seed ensures deterministic generation, allowing the same environment and data characteristics to be reproduced across runs while supporting large scale dataset generation.
 
 ## User Manual
 The following steps cover the core data generation, transformation, data quality, and exploratory analysis workflow. Machine learning notebooks, Power BI dashboards, and MCP analytics are documented separately.
@@ -90,7 +90,7 @@ On Mac:
 python -m venv venv
 source venv/bin/activate
 ```
-On Windows:
+On Windows (Command Prompt):
 ```bash
 venv\Scripts\activate
 ```
@@ -102,8 +102,8 @@ pip install -r requirements.txt
 
 ### 4. BigQuery Setup
 Configure Google Cloud credentials and ensure the target BigQuery project is available.
-**Project:** `mega-mart-storage`
-**Region:** `asia-southeast1`
+- **Project:** `mega-mart-storage`
+- **Region:** `asia-southeast1`
 
 The project uses the following datasets:
 - `synthetic_dirty` - dirty source environment
@@ -128,7 +128,7 @@ Install dbt packages:
 dbt deps
 ```
 
-Run transformation:
+Run the transformation models:
 ```bash
 dbt run
 ```
@@ -161,9 +161,14 @@ The profiling pipeline:
 The profiling output should be generated before running downstream notebook analysis.
 
 ### 8. Notebook Analysis
-Once the profiling report has been generated, the notebook can be used for deeper exploratory analysis and visualisation. The notebook should consume the profiling outputs rather than independently recreating the dbt validation logic.
-> dbt = source of truth for validation<br>
-> Python profiler = structured interpretation of validation results<br>
-> Jupyter Notebook = exploratory analysis/visualisation
+After generating the profiling report, open:
 
-In `dirty_data_profiling/notebook/01_dirty_data_profiling.ipynb`, select **Run All** to execute all cell and generate the notebook outputs.
+```text
+dirty_data_profiling/notebook/01_dirty_data_profiling.ipynb
+```
+Click `Run All` to execute all cells, load the profiling outputs, and generate the exploratory analysis and visualisations.
+
+The notebook uses the outputs from the profiling workflow rather than independently recreating the dbt validation logic.
+> - dbt = source of truth for validation
+> - Python profiler = structured interpretation of validation results
+> - Jupyter Notebook = exploratory analysis/visualisation
