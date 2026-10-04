@@ -39,7 +39,7 @@ class DBTRunner:
 
         if result.returncode != 0:
 
-            print(f"dbt {command[1]} completed with failures.")
+            print(f"dbt {command[1]} exited with code " f"{result.returncode}.")
 
             print(result.stderr)
 

@@ -83,23 +83,73 @@ def run_profiling(
     print("Running dbt Validation")
     print("=" * 70)
 
-    DBTRunner().run_test(
+    run_result, _test_result = DBTRunner().run_test(
         target=dbt_target,
         select=dbt_select or dataset,
     )
 
-    profiles = []
+    #
+    # dbt run execution gate
+    #
 
-    print("=" * 70)
-    print("MegaMart Dirty Data Profiler")
-    print("=" * 70)
+    if run_result.returncode != 0:
+
+        print()
+        print("=" * 70)
+        print("dbt run failed")
+        print("Profiling aborted.")
+        print("=" * 70)
+
+        return [], pd.DataFrame()
+
+    #
+    # Load dbt artifacts
+    #
 
     artifact_loader = DBTArtifactLoader()
 
     dbt_summaries = artifact_loader.load_results()
 
     if dataset is not None:
-        dbt_summaries = [s for s in dbt_summaries if s.dataset == dataset]
+
+        dbt_summaries = [
+            summary for summary in dbt_summaries if summary.dataset == dataset
+        ]
+
+    #
+    # dbt test execution / validation gate
+    #
+
+    errored_tests = [
+        test for summary in dbt_summaries for test in summary.tests if test.errored
+    ]
+
+    if errored_tests:
+
+        print()
+        print("=" * 70)
+        print("dbt test errors detected")
+        print("Profiling aborted.")
+        print("=" * 70)
+
+        for test in errored_tests:
+
+            print(f"- {test.model} | " f"{test.rule} | " f"status: {test.status}")
+
+            if test.message:
+                print(f"  message: {test.message}")
+
+        return [], pd.DataFrame()
+
+    #
+    # Profiling
+    #
+
+    profiles = []
+
+    print("=" * 70)
+    print("MegaMart Dirty Data Profiler")
+    print("=" * 70)
 
     failure_loader = FailureLoader()
 
@@ -147,7 +197,9 @@ def run_profiling(
 
             try:
 
-                test.failed_rows = failure_loader.load(test.failure_table)
+                test.failed_rows = failure_loader.load(
+                    test.failure_table,
+                )
 
             except Exception:
 
@@ -167,14 +219,17 @@ def run_profiling(
 
         profiles.append(profile)
 
+    #
     # Overall Summary
     #
 
     summary = pd.DataFrame(build_summary(p) for p in profiles)
 
     if summary.empty:
+
         print()
         print("No datasets were profiled")
+
         return profiles, summary
 
     total_tests = sum(s.total_tests for s in dbt_summaries)
