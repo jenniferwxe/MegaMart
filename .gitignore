@@ -214,5 +214,8 @@ __marimo__/
 /data_generation/raw_data/
 /dirty_data_generation/dirty_data/
 
+# dbt packages
+/dbt/dbt_packages/
+
 # Profling reports
 /dirty_data_profiling/reports
