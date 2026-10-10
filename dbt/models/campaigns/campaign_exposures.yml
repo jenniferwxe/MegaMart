@@ -16,7 +16,7 @@ models:
           config:
             meta:
               title: Duplicate Campaign Exposure
-              category: Business Rule Violations
+              category: Duplicated Records
               severity: High
               description: A campaign exposure must only appear once per campaign, customer, and channel.
 

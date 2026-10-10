@@ -539,7 +539,7 @@ models:
           config:
             meta:
               title: Duplicate Clickstream Event
-              category: Business Rule Violations
+              category: Duplicated Records
               severity: High
               description: A clickstream event must only appear once per session_id and event_order.
 

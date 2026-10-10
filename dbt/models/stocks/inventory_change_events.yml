@@ -16,7 +16,7 @@ models:
           config:
             meta:
               title: Duplicate Inventory Change Event
-              category: Business Rule Violations
+              category: Duplicated Records
               severity: High
               description: An inventory change event must only appear once per store, product, and event_timestamp.
 
