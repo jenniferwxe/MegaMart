@@ -15,7 +15,7 @@ models:
           config:
             meta:
               title: Duplicate Competitor Product at the Same Scrape Timestamp
-              category: Business Rule Violations
+              category: Duplicated Records
               severity: High
               description: A competitor product must only appear once per competitor and update_timestamp.
 
