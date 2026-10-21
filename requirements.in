@@ -8,6 +8,7 @@ bandit
 pip-audit
 pip>=26.2
 cryptography>=50.0.0
+certifi>=2026.10.19
 pyasn1>=0.6.4
 setuptools>=83.0.0
 
