@@ -267,7 +267,7 @@ models:
                   severity: High
                   description: customer_id must be unique.
 
-          - dbt_expectations.expect_column_values_to_match_regex:
+          - column_values_to_match_regex:
               arguments:
                 regex: "^CUST[0-9]{3,}$"
 
@@ -307,7 +307,7 @@ models:
 
       - name: customer_name
         tests:
-          - dbt_expectations.expect_column_values_to_match_regex:
+          - column_values_to_match_regex:
               arguments:
                 regex: "^[A-Za-z -]+$"
 
@@ -330,7 +330,7 @@ models:
                   severity: High
                   description: email must be unique.
 
-          - dbt_expectations.expect_column_values_to_match_regex:
+          - column_values_to_match_regex:
               arguments:
                 regex: '^[^[:space:]@]+@[^[:space:]@]+\\.[^[:space:]@]+$'
 

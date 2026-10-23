@@ -29,8 +29,9 @@ cachecontrol[filecache]==0.14.4
     # via
     #   cachecontrol
     #   pip-audit
-certifi==2026.7.22
+certifi==2026.10.19
     # via
+    #   -r requirements.in
     #   google-cloud-aiplatform
     #   httpcore
     #   httpx
@@ -194,8 +195,10 @@ idna==3.18
     #   anyio
     #   httpx
     #   requests
-importlib-metadata==9.0.0
-    # via metricflow
+importlib-metadata==8.9.0
+    # via
+    #   -r requirements.in
+    #   metricflow
 iniconfig==2.3.0
     # via pytest
 isodate==0.7.2
@@ -253,7 +256,7 @@ numpy==2.4.6
     #   db-dtypes
     #   pandas
     #   pandas-gbq
-oauthlib==3.3.1
+oauthlib==4.0.0
     # via requests-oauthlib
 orderly-set==5.5.0
     # via deepdiff
@@ -269,6 +272,7 @@ packaging==26.2
     #   pip-audit
     #   pip-requirements-parser
     #   pytest
+    #   virtualenv
 pandas==3.0.5
     # via
     #   -r requirements.in
@@ -293,7 +297,6 @@ platformdirs==4.11.0
     # via
     #   jupyter-core
     #   pip-audit
-    #   python-discovery
     #   virtualenv
 pluggy==1.6.0
     # via
@@ -366,7 +369,7 @@ python-dateutil==2.9.0.post0
     #   google-cloud-bigquery
     #   metricflow
     #   pandas
-python-discovery==1.5.0
+python-discovery==1.6.1
     # via virtualenv
 python-dotenv==1.2.2
     # via dbt-core
@@ -462,9 +465,9 @@ typing-extensions==4.16.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.7.0
+urllib3==2.8.0
     # via requests
-virtualenv==21.7.0
+virtualenv==21.14.2
     # via pre-commit
 websockets==16.1.1
     # via google-genai
