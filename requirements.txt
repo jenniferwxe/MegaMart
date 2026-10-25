@@ -262,7 +262,7 @@ orderly-set==5.5.0
     # via deepdiff
 packageurl-python==0.17.6
     # via cyclonedx-python-lib
-packaging==26.2
+packaging==26.3
     # via
     #   db-dtypes
     #   dbt-core
@@ -467,8 +467,10 @@ typing-inspection==0.4.2
     # via pydantic
 urllib3==2.8.0
     # via requests
-virtualenv==21.14.2
-    # via pre-commit
+virtualenv==21.14.13
+    # via
+    #   -r requirements.in
+    #   pre-commit
 websockets==16.1.1
     # via google-genai
 zipp==4.1.0
