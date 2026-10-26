@@ -16,7 +16,7 @@ models:
           config:
             meta:
               title: Duplicate Campaign Assignment
-              category: Business Rule Violations
+              category: Duplicated Records
               severity: High
               description: >
                 A campaign assignment must only appear once per
