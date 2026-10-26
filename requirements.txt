@@ -94,7 +94,7 @@ distro==1.9.0
     # via google-genai
 docstring-parser==0.18.0
     # via google-cloud-aiplatform
-duckdb==1.5.5
+duckdb==2.0.0
     # via -r requirements.in
 faker==40.35.0
     # via -r requirements.in
