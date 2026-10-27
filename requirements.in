@@ -17,7 +17,7 @@ setuptools>=83.0.0
 # dbt
 dbt-core>=1.11,<2.0
 dbt-bigquery>=1.11,<2.0
-importlib-metadata<9,>=6.0
+importlib-metadata>=9.1.0,<10
 
 # project deps
 pandas
