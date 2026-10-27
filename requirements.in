@@ -6,7 +6,7 @@ pytest-cov
 # security
 bandit
 pip-audit
-pip>=26.2
+pip>=26.2.2
 virtualenv>=21.14.9
 filelock>=4.2.1
 cryptography>=50.0.0
