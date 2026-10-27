@@ -48,9 +48,9 @@ Data Quality Simulation
           |
           v
 Data Quality Validation (dbt)
-          |                             
-          v                             
-Data Quality Profiling - - - - - - - - +     
+          |
+          v
+Data Quality Profiling - - - - - - - - +
           |                            |
    +------+------+                     v
    |             |       Data Cleaning & Transformation (dbt)
@@ -98,7 +98,7 @@ Develop a **Streamlit Data Quality Overview Dashboard** to present findings from
 
 The dashboard will summarise data quality metrics, compare datasets, and visualise failure categories using existing profiling outputs. It will complement the Jupyter Notebook by providing a user friendly, interactive interface for exploring profiling findings without navigating notebook cells or running analysis code themselves.
 
-### 7. Data Cleaning & Analytical Transformation 
+### 7. Data Cleaning & Analytical Transformation
 Clean and standardise raw data into trusted analytical datasets using **dbt SQL models**, including standardisation logic, deduplication, data type handling, business rules, and derived fields to form the staging and analytical data layers.
 
 ### 8. Exploratory Data Analysis (EDA)
