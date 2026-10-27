@@ -194,8 +194,10 @@ idna==3.18
     #   anyio
     #   httpx
     #   requests
-importlib-metadata==9.0.0
-    # via metricflow
+importlib-metadata==8.9.0
+    # via
+    #   -r requirements.in
+    #   metricflow
 iniconfig==2.3.0
     # via pytest
 isodate==0.7.2
@@ -236,7 +238,7 @@ metricflow==0.211.0
     # via dbt-core
 more-itertools==10.8.0
     # via metricflow
-msgpack==1.2.1
+msgpack==1.2.4
     # via
     #   -r requirements.in
     #   cachecontrol
@@ -325,8 +327,9 @@ psutil==7.2.2
     # via pandas-gbq
 py-serializable==2.1.0
     # via cyclonedx-python-lib
-pyarrow==25.0.0
+pyarrow==26.0.0
     # via
+    #   -r requirements.in
     #   db-dtypes
     #   google-cloud-bigquery
     #   pandas-gbq

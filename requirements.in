@@ -21,4 +21,6 @@ numpy
 faker
 pyyaml
 duckdb
-msgpack>=1.2.1
+msgpack>=1.2.3
+importlib-metadata<9
+pyarrow>=10.0.1,<27,!=25.0.0
