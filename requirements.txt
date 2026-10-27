@@ -240,7 +240,7 @@ metricflow==0.211.0
     # via dbt-core
 more-itertools==10.8.0
     # via metricflow
-msgpack==1.2.1
+msgpack==1.2.3
     # via
     #   -r requirements.in
     #   cachecontrol

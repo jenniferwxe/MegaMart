@@ -25,4 +25,4 @@ numpy
 faker
 pyyaml
 duckdb
-msgpack>=1.2.1
+msgpack>=1.2.3
