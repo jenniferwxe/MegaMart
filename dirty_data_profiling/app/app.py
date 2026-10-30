@@ -162,6 +162,100 @@ st.divider()
 
 
 # ---------------------------------------------------------------------
+# Validation test explorer
+# ---------------------------------------------------------------------
+
+st.subheader("Validation test explorer")
+
+st.caption(
+    "Investigate individual validation results and identify "
+    "rules requiring attention."
+)
+
+test_data = tests.copy()
+
+# Normalise status values for filtering
+test_data["_status"] = test_data["status"].astype(str).str.lower()
+
+# Filters
+filter_col1, filter_col2 = st.columns(2)
+
+with filter_col1:
+    status_options = ["All"] + sorted(test_data["_status"].unique().tolist())
+
+    selected_status = st.selectbox(
+        "Test status",
+        status_options,
+        key="test_status_filter",
+    )
+
+with filter_col2:
+    category_options = ["All"] + sorted(
+        test_data["category"].dropna().unique().tolist()
+    )
+
+    selected_test_category = st.selectbox(
+        "Validation category",
+        category_options,
+        key="test_category_filter",
+    )
+
+test_search = st.text_input(
+    "Search validation tests",
+    placeholder="Search test name, model, rule or column",
+)
+
+filtered_tests = test_data.copy()
+
+if selected_status != "All":
+    filtered_tests = filtered_tests[filtered_tests["_status"] == selected_status]
+
+if selected_test_category != "All":
+    filtered_tests = filtered_tests[
+        filtered_tests["category"] == selected_test_category
+    ]
+
+# Search across available test metadata
+if test_search.strip():
+    searchable_columns = [
+        column for column in filtered_tests.columns if column != "_status"
+    ]
+
+    search_data = filtered_tests[searchable_columns].fillna("").astype(str)
+
+    mask = search_data.apply(
+        lambda column: column.str.contains(
+            test_search.strip(),
+            case=False,
+            regex=False,
+        )
+    ).any(axis=1)
+
+    filtered_tests = filtered_tests[mask]
+
+# Summary
+st.caption(f"Showing {len(filtered_tests):,} of {len(test_data):,} validation tests")
+
+# Display results
+display_tests = filtered_tests.drop(columns=["_status"])
+
+st.dataframe(
+    display_tests,
+    use_container_width=True,
+    hide_index=True,
+)
+
+# Export filtered results
+st.download_button(
+    "Download filtered test results",
+    data=display_tests.to_csv(index=False).encode("utf-8"),
+    file_name="filtered_validation_tests.csv",
+    mime="text/csv",
+    key="download_validation_tests",
+)
+
+
+# ---------------------------------------------------------------------
 # Dataset-level investigation
 # ---------------------------------------------------------------------
 
