@@ -302,6 +302,86 @@ st.dataframe(
     },
 )
 
+# ---------------------------------------------------------------------
+# Issue severity overview
+# ---------------------------------------------------------------------
+
+st.divider()
+st.subheader("Issue severity overview")
+
+st.caption(
+    "Understand the distribution of data quality issues "
+    "and identify datasets requiring prioritised investigation."
+)
+
+# Normalise severity values
+severity_data = dirty_records.copy()
+
+severity_data["severity"] = (
+    severity_data["severity"]
+    .fillna("Unspecified")
+    .astype(str)
+    .str.strip()
+    .replace("", "Unspecified")
+)
+
+# Severity distribution
+severity_summary = (
+    severity_data["severity"]
+    .value_counts()
+    .rename_axis("severity")
+    .reset_index(name="failure_entries")
+)
+
+# Severity breakdown by dataset
+severity_by_dataset = (
+    severity_data.groupby(["dataset", "severity"]).size().unstack(fill_value=0)
+)
+
+# Visualisations
+severity_col1, severity_col2 = st.columns(2)
+
+with severity_col1:
+    st.markdown("**Issue entries by severity**")
+
+    if not severity_summary.empty:
+        chart_data = severity_summary.set_index("severity")
+
+        st.bar_chart(chart_data["failure_entries"])
+    else:
+        st.info("No severity data available.")
+
+with severity_col2:
+    st.markdown("**Severity distribution by dataset**")
+
+    if not severity_by_dataset.empty:
+        st.bar_chart(severity_by_dataset)
+    else:
+        st.info("No dataset severity data available.")
+
+# Severity summary table
+st.markdown("**Severity summary**")
+
+if not severity_summary.empty:
+    st.dataframe(
+        severity_summary,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "severity": st.column_config.TextColumn("Severity level"),
+            "failure_entries": st.column_config.NumberColumn(
+                "Dirty-record entries",
+                format="%d",
+            ),
+        },
+    )
+
+st.caption(
+    "Counts represent dirty-record entries, not necessarily "
+    "distinct affected records. A single record may have multiple "
+    "validation failures."
+)
+
 
 # ---------------------------------------------------------------------
 # Dirty-record investigation
