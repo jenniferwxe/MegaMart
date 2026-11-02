@@ -96,7 +96,7 @@ docstring-parser==0.18.0
     # via google-cloud-aiplatform
 duckdb==2.0.0
     # via -r requirements.in
-faker==40.35.0
+faker==40.44.0
     # via -r requirements.in
 fastjsonschema==2.21.2
     # via nbformat
