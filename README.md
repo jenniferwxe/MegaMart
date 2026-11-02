@@ -21,7 +21,7 @@ Many analytics projects begin with a clean dataset and end with a dashboard. Rea
 
 MegaMart is designed to demonstrate this broader workflow - from synthetic source generation and data quality engineering to analytical transformation, advanced analytics, and AI assisted data analysis.
 
-Rather than focusing solely on dashbaord development, the project demonstrates how raw data can be systematically validated, transformed, analysed, and exposed for downstream analytical consumption.
+Rather than focusing solely on dashboard development, the project demonstrates how raw data can be systematically validated, transformed, analysed, and exposed for downstream analytical consumption.
 
 ## What This Project Demonstrates
 MegaMart is designed as a **maintainable retail analytics platform** rather than a standalone dashboard. It brings together the layers needed to move from raw data to **trustworthy, reusable, and business ready analysis**.
@@ -31,31 +31,42 @@ MegaMart is designed as a **maintainable retail analytics platform** rather than
 | **Analytics** | Builds business facing datasets and analytical workflows across sales, customers, products, inventory, campaigns, segmentation, and forecasting. | Supports business ready analysis and actionable commercial insights from a consistent analytical foundation. |
 | **Data Engineering** | Orchestrates data generation, quality simulation, validation, transformation, and analysis as a connected workflow. | Makes the data lifecycle reproducible, allowing the same process to be rerun across datasets and development environments. |
 | **Analytics Engineering** | Organises transformations with modular dbt models, reusable tests, packages, metadata, and documented dependencies. | Creates a structured transformation layer that is easier to understand, maintain, test, and extend as the project grows. |
-| **Data Quality Engineering** | Captures dbt test failures and profiling results, then surfaces affected records and business readable data quality insights. | Makes data issues visible and traceable before they influence downstream analysis. |
+| **Data Quality Engineering** | Uses dbt tests and Python profiling to identify, quantify, and investigate data quality issues, with Streamlit providing an interactive interface for exploring profiling findings. | Makes data issues visible and traceable before they affect downstream analysis. |
 | **Python & AI Engineering** | Develops reusable Python components and MCP tools for data workflows, analytical operations, and controlled AI interaction. | Extends the platform beyond manual analysis by making analytical capabilities programmatically accessible. |
 
 Together, these layers demonstrate how analytical work can be built as a **reproducible and maintainable system**, integrating data, transformation, quality, analysis, and AI access into a cohesive platform.
 
 ## Architecture
-```mermaid
-flowchart TB
-    A["Synthetic Data Generation"]
-    B["Data Quality Simulation"]
-    C["Raw Data Layer"]
-    D["Transformation & Data Validation"]
-    E["Data Quality Profiling"]
-    F["Analytical Data Layer"]
-    G["BI & Visualization"]
-    H["AI Analytics"]
-    I["AI Agent"]
-
-    A --> B --> C
-    C --> D
-    D --> E
-    D --> F
-    E -.-> F
-    F --> G
-    F --> H --> I
+```text
+Synthetic Data Generation
+          |
+          v
+Data Quality Simulation
+          |
+          v
+    Raw Data Layer
+          |
+          v
+Data Quality Validation (dbt)
+          |
+          v
+Data Quality Profiling - - - - - - - - +
+          |                            |
+   +------+------+                     v
+   |             |       Data Cleaning & Transformation (dbt)
+   v             v                     |
+Jupyter      Streamlit                 |
+Notebook     Data Quality              |
+             Overview                  v
+                             Analytical Data Layer
+                                       |
+                                       +------------------+
+                                       |                  |
+                                       v                  v
+                              BI & Visualization    AI Analytics
+                                                          |
+                                                          v
+                                                       AI Agent
 ```
 
 The architecture separates **data generation, data quality assessment, transformation, and analytical consumption**, with data quality profiling providing structured visibility into validation results before downstream analysis.
@@ -74,7 +85,7 @@ Simulate realistic source system imperfections by injecting controlled data qual
 ### 3. Data Ingestion & Warehousing
 Ingest generated datasets into **Google BigQuery** as the cloud data warehouse, establishing the raw data layer.
 
-### 4. Transformation & Data Validation
+### 4. Data Quality Validation
 Use **dbt** to define SQL transformation models and a data quality validation framework through tests, reusable macros, and automated test execution. Validation results and failed records are persisted for downstream profiling.
 
 ### 5. Data Quality Profiling
@@ -82,47 +93,53 @@ Analyse the **dbt artifacts and persisted failure records** to quantify affected
 
 Results are aggregated and presented in **Jupyter Notebook** to make data quality findings accessible to both technical and non technical stakeholders.
 
-### 6. Data Cleaning & Analytical Transformation
+### 6. Data Quality Overview (Streamlit)
+Develop a **Streamlit Data Quality Overview Dashboard** to present findings from the existing dbt validation and Python profiling workflow.
+
+The dashboard will summarise data quality metrics, compare datasets, and visualise failure categories using existing profiling outputs. It will complement the Jupyter Notebook by providing a user friendly, interactive interface for exploring profiling findings without navigating notebook cells or running analysis code themselves.
+
+### 7. Data Cleaning & Analytical Transformation
 Clean and standardise raw data into trusted analytical datasets using **dbt SQL models**, including standardisation logic, deduplication, data type handling, business rules, and derived fields to form the staging and analytical data layers.
 
-### 7. Exploratory Data Analysis (EDA)
+### 8. Exploratory Data Analysis (EDA)
 Perform statistical and visual analysis in **Python** using **Jupyter Notebook** to assess distributions, relationships, trends, patterns and anomalies across the transformed datasets.
 
-### 8. Feature Engineering
+### 9. Feature Engineering
 Construct reusable analytical and **machine learning ready features** using **Python** and **SQL**, including derived metrics, customer attributes, behavioural indicators, and business KPIs.
 
-### 9. Advanced Analytics & Machine Learning
+### 10. Advanced Analytics & Machine Learning
 Apply **predictive modelling**, **customer segmentation**, **forecasting**, and **association rule mining** to support business decision making.
 
-### 10. Dashboarding & Business Intelligence
+### 11. Dashboarding & Business Intelligence
 Develop interactive **Power BI** dashboards using dashboard ready datasets from the analytical data layer to monitor business KPIs, customer behaviour, sales performance, inventory, and other operational metrics.
 
-### 11. MCP Analytics Tools
+### 12. MCP Analytics Tools
 Build **Model Context Protocol (MCP)** tools that expose the analytical environment to AI agents, enabling programmatic access to business data, controlled querying, analytical workflows, and AI assisted business question answering.
 
 ```text
-                    User
-                      │
-                      ▼
-                  AI Agent
-                      │
-                      ▼
-                  MCP Tools
-                      │
-          ┌───────────┼───────────┐
-          ▼           ▼           ▼
-       Sales      Inventory    Customers
-       Tools        Tools        Tools
-          │           │           │
-          └───────────┼───────────┘
-                      ▼
-                   BigQuery
-                      │
-                      ▼
-              Structured Results
-                      │
-                      ▼
-              Grounded Explanation
+              User
+                |
+                v
+            AI Agent
+                |
+                v
+            MCP Tools
+     +----------+----------+
+     |          |          |
+     v          v          v
+  Sales     Inventory  Customers
+  Tools       Tools      Tools
+     |          |          |
+     +----------+----------+
+                |
+                v
+             BigQuery
+                |
+                v
+        Structured Results
+                |
+                v
+       Grounded Explanation
 ```
 
 The design emphasises **controlled access** rather than unrestricted database access. MCP tools define the available analytical capabilities while supporting:
@@ -174,14 +191,16 @@ MegaMart supports analysis across key retail domains:
 ## Data Modelling Approach
 MegaMart uses a layered data modelling approach in **dbt** to progressively transform simulated source data into trusted analytical datasets.
 
-```mermaid
-flowchart TB
-    A["Raw / Simulated Source Data"]
-    B["Staging Models"]
-    C["Analytical Models"]
-
-    A --> B --> C
+```text
+Raw / Simulated Source Data
+            |
+            v
+      Staging Models
+            |
+            v
+     Analytical Models
 ```
+
 - **Raw / Simulated Source Data** — Generated retail datasets containing intentionally simulated data quality issues.
 - **Staging Models** — Standardise source data, handle data types and duplicates, and apply foundational business rules.
 - **Analytical Models** — Build reusable business entities, metrics, relationships, and derived fields for downstream **BI**, **feature engineering**, **machine learning**, and **AI assisted analytics**.
@@ -222,6 +241,15 @@ MegaMart uses Python for:
 - MCP integration
 
 These three tools form the project's **core data engineering and analytics foundation**.
+
+## Analytics & Visualisation Tools
+MegaMart uses a range of tools to make analytical findings accessible and useful across different stages of the analytics lifecycle.
+
+| Tool | Primary Responsibility |
+|---|---|
+| **Jupyter Notebook** | Detailed data quality profiling analysis, code based investigation, exploratory analysis, and custom visualisations |
+| **Streamlit** | Interactive exploration of data quality findings through a user friendly interface, without requiring users to navigate notebook cells or run analysis code themselves |
+| **Power BI** | Business facing dashboards for retail KPIs, performance monitoring, and decision making |
 
 ## Supporting Practices
 
@@ -312,7 +340,7 @@ dirty_data_profiling/notebook/01_dirty_data_profiling.ipynb
 ```
 Click `Run All` to execute all cells, load the profiling outputs, and generate the data quality analysis and visualisations.
 
-The notebook consumes the outputs of the profiling workflow rather than  recreating the dbt validation logic.
+The notebook consumes the outputs of the profiling workflow rather than recreating the dbt validation logic.
 > - dbt = source of truth for validation
 > - Python profiler = structured interpretation of validation results
 > - Jupyter Notebook = analysis and visualisation
