@@ -10,7 +10,7 @@ pip>=26.2.2
 virtualenv>=21.14.9
 filelock>=4.2.1
 cryptography>=50.0.0
-certifi>=2026.10.19
+certifi>=2026.10.23
 pyasn1>=0.6.4
 setuptools>=83.0.0
 
